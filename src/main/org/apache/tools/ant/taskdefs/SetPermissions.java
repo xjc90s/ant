@@ -137,7 +137,7 @@ public class SetPermissions extends Task {
      * @param actOnLinkTargets true if permissions of link targets should be set.
      * @since Ant 1.10.16
      */
-    public void setActOnLinkTarget(boolean actOnLinkTargets) {
+    public void setActOnLinkTargets(boolean actOnLinkTargets) {
         this.actOnLinkTargets = actOnLinkTargets;
     }
 
