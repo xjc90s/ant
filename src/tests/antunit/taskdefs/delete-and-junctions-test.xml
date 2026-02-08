@@ -77,7 +77,7 @@
   <target name="testDanglingJunctionInDir" if="windows_os"
           depends="prepare-dangling-tests">
     <mkdir dir="${output}/foo"/>
-    <mklink link="${existing.dir}/link" targetFile="${output}/foo"/>
+    <mklink linktype="junction" link="${existing.dir}/link" targetFile="${output}/foo"/>
     <delete dir="${output}/foo"/>
     <delete dir="${existing.dir}"/>
     <au:assertFileDoesntExist file="${existing.dir}" />
@@ -86,7 +86,7 @@
   <target name="testDanglingJunction" if="windows_os"
           depends="prepare-dangling-tests">
     <mkdir dir="${output}/foo"/>
-    <mklink link="${existing.dir}/link" targetFile="${output}/foo"/>
+    <mklink linktype="junction" link="${existing.dir}/link" targetFile="${output}/foo"/>
     <delete dir="${output}/foo"/>
     <delete dir="${output}/link"/>
 
