@@ -21,9 +21,7 @@
   
   <import file="../antunit-base.xml" />
 
-  <condition property="unix">
-    <os family="unix" />
-  </condition>
+  <condition property="canCreateSymlink"><canCreateSymlink/></condition>
 
   <target name="tearDown" depends="removelink, antunit-base.tearDown"/>
 
@@ -31,21 +29,21 @@
     <delete link="${link}"/>
   </target>
 
-  <target name="setUp" if="unix">
+  <target name="setUp" if="canCreateSymlink">
     <mkdir dir="${input}/A/B"/>
     <mkdir dir="${input}/C"/>
     <property name="link" location="${input}/A/B/C"/>
     <symlink link="${link}" resource="${input}/C"/>
   </target>
 
-  <target name="testNotFollowedLink" if="unix" depends="setUp">
+  <target name="testNotFollowedLink" if="canCreateSymlink" depends="setUp">
     <delete>
       <fileset dir="${input}" followSymlinks="false"/>
     </delete>
     <au:assertFileExists file="${input}/A/B/C"/>
   </target>
 
-  <target name="testRemoveNotFollowedLink" if="unix" depends="setUp">
+  <target name="testRemoveNotFollowedLink" if="canCreateSymlink" depends="setUp">
     <delete removeNotFollowedSymlinks="true">
       <fileset dir="${input}/A" followSymlinks="false"/>
     </delete>
@@ -54,7 +52,7 @@
   </target>
 
   <target name="testRemoveNotFollowedLinkHonorsIncludesOnFiles"
-          depends="setUp" if="unix"
+          depends="setUp" if="canCreateSymlink"
           description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53959">
     <delete dir="${input}/C"/>
     <touch file="${input}/C"/>
@@ -65,7 +63,7 @@
   </target>
 
   <target name="testRemoveNotFollowedLinkDeletesNotIncludedDirs"
-          depends="setUp" if="unix"
+          depends="setUp" if="canCreateSymlink"
           description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53959">
     <delete removeNotFollowedSymlinks="true">
       <fileset dir="${input}/A" followSymlinks="false" includes="**/D"/>
@@ -74,11 +72,43 @@
     <au:assertFileExists file="${input}/C"/>
   </target>
 
-  <target name="testRemoveNotFollowedLinkHonorsExcludes" if="unix"
+  <target name="testRemoveNotFollowedLinkHonorsExcludes" if="canCreateSymlink"
           depends="setUp">
     <delete removeNotFollowedSymlinks="true">
       <fileset dir="${input}/A" followSymlinks="false" excludes="**/C/**"/>
     </delete>
     <au:assertFileExists file="${input}/A/B/C"/>
   </target>
+
+  <target name="prepare-dangling-tests">
+    <property name="existing.dir" location="${output}/exists"/>
+    <delete dir="${output}"/>
+    <mkdir dir="${output}"/>
+    <mkdir dir="${existing.dir}"/>
+  </target>
+
+  <target name="testDanglingSymlinkInDir" if="canCreateSymlink"
+          depends="prepare-dangling-tests">
+    <touch file="${output}/foo"/>
+    <symlink link="${existing.dir}/link"
+             resource="${output}/foo"/>
+    <delete file="${output}/foo"/>
+    <delete dir="${existing.dir}"/>
+    <au:assertFileDoesntExist file="${existing.dir}" />
+  </target>
+
+  <target name="testDanglingSymlink" if="canCreateSymlink"
+          depends="prepare-dangling-tests">
+    <touch file="${output}/foo"/>
+    <symlink link="${output}/link"
+             resource="${output}/foo"/>
+    <delete file="${output}/foo"/>
+    <delete file="${output}/link"/>
+
+    <!-- since File.exists returns false for dangling links, recreate
+         the file so that assertFileDoesntExist can actually work -->
+    <touch file="${output}/foo"/>
+    <au:assertFileDoesntExist file="${output}/link" />
+  </target>
+
 </project>

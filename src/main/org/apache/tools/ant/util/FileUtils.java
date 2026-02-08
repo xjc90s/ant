@@ -757,7 +757,7 @@ public class FileUtils {
      *     \ as the separator.</li>
      * </ul>
      * <p>Unlike {@link File#getCanonicalPath()} this method
-     * specifically does not resolve symbolic links.</p>
+     * specifically does not resolve symbolic links or Windows junctions.</p>
      *
      * <p>If the path tries to go beyond the file system root (i.e. it
      * contains more ".." segments than can be travelled up) the
@@ -1253,7 +1253,7 @@ public class FileUtils {
      * Removes a leading path from a second path.
      *
      * <p>This method uses {@link #normalize} under the covers and
-     * does not resolve symbolic links.</p>
+     * does not resolve symbolic links or Windows junctions.</p>
      *
      * @param leading The leading path, must not be null, must be absolute.
      * @param path The path to remove from, must not be null, must be absolute.
@@ -1281,7 +1281,7 @@ public class FileUtils {
      * Learn whether one path "leads" another.
      *
      * <p>This method uses {@link #normalize} under the covers and
-     * does not resolve symbolic links.</p>
+     * does not resolve symbolic links or Windows junctions.</p>
      *
      * <p>If either path tries to go beyond the file system root
      * (i.e. it contains more ".." segments than can be travelled up)
@@ -1316,7 +1316,7 @@ public class FileUtils {
      *
      * @param leading The leading path, must not be null, must be absolute.
      * @param path The path to check, must not be null, must be absolute.
-     * @param resolveSymlinks whether symbolic links shall be resolved
+     * @param resolveSymlinks whether symbolic links or Windows junctions shall be resolved
      * prior to comparing the paths.
      * @return true if path starts with leading; false otherwise.
      * @since Ant 1.10.5

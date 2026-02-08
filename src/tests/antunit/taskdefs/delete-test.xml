@@ -67,34 +67,6 @@
 
   </target>
 
-  <target name="checkCanCreateSymlink">
-    <condition property="canCreateSymlink"><canCreateSymlink/></condition>
-  </target>
-
-  <target name="testDanglingSymlinkInDir" if="canCreateSymlink"
-          depends="checkCanCreateSymlink,init">
-    <touch file="${output}/foo"/>
-    <symlink link="${existing.dir}/link"
-             resource="${output}/foo"/>
-    <delete file="${output}/foo"/>
-    <delete dir="${existing.dir}"/>
-    <au:assertFileDoesntExist file="${existing.dir}" />
-  </target>
-
-  <target name="testDanglingSymlink" if="canCreateSymlink"
-          depends="checkCanCreateSymlink,init">
-    <touch file="${output}/foo"/>
-    <symlink link="${output}/link"
-             resource="${output}/foo"/>
-    <delete file="${output}/foo"/>
-    <delete file="${output}/link"/>
-
-    <!-- since File.exists returns false for dangling links, recreate
-         the file so that assertFileDoesntExist can actually work -->
-    <touch file="${output}/foo"/>
-    <au:assertFileDoesntExist file="${output}/link" />
-  </target>
-
   <target name="testNotModifiedSelector"
           description="https://issues.apache.org/bugzilla/show_bug.cgi?id=43574"
           >

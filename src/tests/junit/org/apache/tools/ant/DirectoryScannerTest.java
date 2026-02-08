@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.apache.tools.ant.taskdefs.condition.CanCreateSymbolicLink;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.apache.tools.ant.types.selectors.TokenizedPath;
 import org.junit.Before;
@@ -50,8 +51,8 @@ public class DirectoryScannerTest {
     @Rule
     public BuildFileRule buildRule = new BuildFileRule();
 
-    // keep track of what operating systems are supported here.
-    private boolean supportsSymlinks = Os.isFamily("unix");
+    // keep track of what systems are supported here.
+    private boolean supportsSymlinks = new CanCreateSymbolicLink().eval();
 
     private DirectoryScanner ds;
 

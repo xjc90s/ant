@@ -379,9 +379,9 @@ public class Delete extends MatchingTask {
     }
 
     /**
-     * Sets whether or not symbolic links should be followed.
+     * Sets whether or not symbolic links or Windows junctions should be followed.
      *
-     * @param followSymlinks whether or not symbolic links should be followed
+     * @param followSymlinks whether or not symbolic links or Windows junctions should be followed
      */
     @Override
     public void setFollowSymlinks(boolean followSymlinks) {
