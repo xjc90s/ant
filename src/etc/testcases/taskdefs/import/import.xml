@@ -30,5 +30,8 @@
     <echo message="In main"/>
   </target>
 
+  <target name="prepare-symlink-test">
+    <symlink link="${basedir}/symlinks/d3b" resource="${basedir}/symlinks/d3a"/>
+  </target>
 
 </project>

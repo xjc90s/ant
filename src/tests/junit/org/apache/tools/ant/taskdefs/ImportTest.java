@@ -31,6 +31,7 @@ import java.io.File;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileRule;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.condition.CanCreateSymbolicLink;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -119,15 +120,11 @@ public class ImportTest {
 
     @Test
     public void testSymlinkedImports() throws Exception {
-        String ln = "/usr/bin/ln";
-        if (!new File(ln).exists()) {
-            ln = "/bin/ln";
-        }
-        assumeTrue("Current system does not support Symlinks", new File(ln).exists());
+        boolean supportsSymlinks = new CanCreateSymbolicLink().eval();
+        assumeTrue("Current system does not support Symlinks", supportsSymlinks);
         buildRule.configureProject("src/etc/testcases/taskdefs/import/import.xml");
         File symlinkFile = buildRule.getProject().resolveFile("symlinks/d3b");
-        assertEquals("'" + ln + " -s d3a " + symlinkFile.getAbsolutePath() + "' failed",
-                Runtime.getRuntime().exec(new String[] {ln, "-s", "d3a", symlinkFile.getAbsolutePath()}).waitFor(), 0);
+        buildRule.executeTarget("prepare-symlink-test");
         try {
             buildRule.configureProject("src/etc/testcases/taskdefs/import/symlinks/d1/p1.xml");
             assertEquals(buildRule.getProject().getProperty("ant.file.p2"),
