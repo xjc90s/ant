@@ -44,14 +44,20 @@
       Windows doesn't allow deleting read-only files, so we reset
       the permissions on those files to writable before tearDown
       can delete the input/output directory.
+
+      actOnLinkTargets is set to false as some tests leave dangling
+      links behind leading to errors at least on Windows.
     -->
-    <setpermissions mode="666" nonPosixMode="tryDosOrFail">
+    <setpermissions mode="666" nonPosixMode="tryDosOrFail" actOnLinkTargets="false">
       <fileset dir="${input}" erroronmissingdir="false"/>
       <fileset dir="${output}" erroronmissingdir="false"/>
     </setpermissions>
   </target>
 
   <target name="tearDown" depends="markFilesWritable">
+    <delete dir="${input}" followSymlinks="false" removeNotFollowedSymlinks="true"/>
+    <delete dir="${output}" followSymlinks="false" removeNotFollowedSymlinks="true"/>
+    <delete dir="${resources}" followSymlinks="false" removeNotFollowedSymlinks="true"/>
     <delete dir="${input}"/>
     <delete dir="${output}"/>
     <delete dir="${resources}"/>
